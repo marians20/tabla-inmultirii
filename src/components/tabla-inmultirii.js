@@ -7,14 +7,14 @@ const TablaInmultirii = () => {
 
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
-  const [result, setResult] = useState(undefined);
+  const [result, setResult] = useState('');
   const [isCorrect, setIsCorrect] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
 
   const initialize = useCallback(() => {
     setX(getRandomNumber);
     setY(getRandomNumber);
-    setResult(undefined);
+    setResult('');
     setIsChecked(false);
     inputElement.current.value = undefined;
     inputElement.current.focus();
@@ -46,21 +46,18 @@ const TablaInmultirii = () => {
   return (
     <>
       <div className={classes.container}>
-        {x} x {y} = &nbsp;
+        {x} x {y} =
         <input
-          type="number"
+          type="text"
           className={resultClass}
           value={result}
           onChange={(event) => setResult(event.target.value)}
           onKeyUp={handleKeyUp}
           ref={inputElement}
+          pattern="[0-9]+"
         />
+        <span className={classes.correct}>{isChecked && !isCorrect && `${x * y}`}</span>
       </div>
-      {isChecked && (
-        <div className={classes.message}>
-          {isCorrect ? "Corect!" : `Gresit! valoarea corecta este ${x * y}`}
-        </div>
-      )}
     </>
   );
 };
