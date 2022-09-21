@@ -1,0 +1,16 @@
+.container, .container>input, .message {
+    font-size: 72px;
+}
+
+.container>input {
+    width: 2em;
+    border: none;
+}
+
+.wrong {
+    color: red;
+}
+
+.correct {
+    color: green;
+}
