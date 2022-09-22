@@ -35,7 +35,7 @@ const TablaInmultirii = () => {
   const checkResult = useCallback(() => {
     setIsChecked(true);
     const isCorrectAnswer = Number(result) === x * y;
-    if(!isCorrectAnswer) {
+    if (!isCorrectAnswer) {
       playFart();
     } else {
       playClapping();
@@ -45,7 +45,7 @@ const TablaInmultirii = () => {
     const arr = [...results];
     arr.push({ x: x, y: y, result: result, startTime: startTime, responseTime: new Date() });
     setResults(arr);
-  }, [result, x, y, results, startTime, playFart]);
+  }, [result, x, y, results, startTime, playFart, playClapping]);
 
   useEffect(() => {
     initialize();
@@ -95,6 +95,38 @@ const TablaInmultirii = () => {
 
   const resultClass = isChecked ? (isCorrect ? classes.correct : classes.wrong) : '';
 
+  const waiting = (
+    <iframe
+      title='waiting'
+      allow="fullscreen"
+      frameBorder="0"
+      height="270"
+      src="https://giphy.com/embed/S32isdJcvgiHELsJ5l/video"
+      width="480"/>
+  );
+
+  const happy = (
+    <iframe
+      title='happy'
+      src="https://giphy.com/embed/YnBntKOgnUSBkV7bQH"
+      width="480"
+      height="400"
+      frameBorder="0"
+      class="giphy-embed"
+      allowFullScreen />
+  )
+
+  const sad = (
+    <iframe
+      title='sad'
+      src="https://giphy.com/embed/6WawoqPVcO7S738Tht"
+      width="480"
+      height="270"
+      frameBorder="0"
+      class="giphy-embed"
+      allowFullScreen />
+  )
+
   return (
     <>
       <div className={classes.container} onKeyUp={handleKeyUp}>
@@ -111,7 +143,17 @@ const TablaInmultirii = () => {
         />
         <span className={classes.correct}>{isChecked && !isCorrect && `${x * y}`}</span>
       </div>
-      <Rezultate results={results}/>
+      <div className={classes['results-container']}>
+        <span>
+          {!isChecked && waiting}
+          {isChecked && isCorrect && happy}
+          {isChecked && !isCorrect && sad}
+        </span>
+        <span>
+          <Rezultate results={results} />
+        </span>
+      </div>
+
     </>
   );
 };
