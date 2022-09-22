@@ -1,63 +1,117 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
+import useSound from 'use-sound';
+
+import Rezultate from './rezultate';
+import Constants from './../constants';
+import { isDigit } from '../lib/validators/stringValidators';
+
+import fart from '../sounds/fart.mp3';
+import clapping from '../sounds/clapping.mp3';
 import classes from "./tabla-inmultirii.module.css";
-const getRandomNumber = () => Math.floor(Math.random() * 10) + 1;
+
+
+const getRandomNumber = () => Math.floor(Math.random() * 8) + 2;
 
 const TablaInmultirii = () => {
   const inputElement = useRef();
-
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
   const [result, setResult] = useState('');
   const [isCorrect, setIsCorrect] = useState(true);
   const [isChecked, setIsChecked] = useState(false);
-
+  const [startTime, setStartTime] = useState(new Date());
+  const [results, setResults] = useState([]);
+  const [playFart] = useSound(fart);
+  const [playClapping] = useSound(clapping);
   const initialize = useCallback(() => {
     setX(getRandomNumber);
     setY(getRandomNumber);
     setResult('');
     setIsChecked(false);
-    inputElement.current.value = undefined;
     inputElement.current.focus();
+    setStartTime(new Date());
   }, []);
 
   const checkResult = useCallback(() => {
-    setIsCorrect(Number(result) === x * y);
     setIsChecked(true);
-  }, [result, x, y]);
+    const isCorrectAnswer = Number(result) === x * y;
+    if(!isCorrectAnswer) {
+      playFart();
+    } else {
+      playClapping();
+    }
+
+    setIsCorrect(isCorrectAnswer);
+    const arr = [...results];
+    arr.push({ x: x, y: y, result: result, startTime: startTime, responseTime: new Date() });
+    setResults(arr);
+  }, [result, x, y, results, startTime, playFart]);
 
   useEffect(() => {
     initialize();
   }, [initialize]);
 
   const handleKeyUp = (event) => {
-    if (event.key !== "Enter") {
-      return;
-    }
-
     event.preventDefault();
-    if (isChecked) {
-      initialize();
-    } else {
-      checkResult();
+
+    switch (event.code) {
+      case Constants.KeyCodes.Enter:
+        if (isChecked) {
+          initialize();
+        } else {
+          checkResult();
+        }
+        break;
+      case Constants.KeyCodes.Escape:
+        initialize();
+        break;
+      default:
+      // pass
     }
   };
 
+  const validate = (evt) => {
+    let theEvent = evt || window.event;
+    let key;
+
+    // Handle paste
+    console.log(theEvent.type);
+    if (theEvent.type === Constants.EventTypes.Paste) {
+      key = theEvent.clipboardData.getData('text/plain');
+    }
+    else {
+      // Handle key press
+      key = theEvent.keyCode || theEvent.which;
+      key = String.fromCharCode(key);
+    }
+    if (!isDigit(key)) {
+      theEvent.returnValue = false;
+
+      if (theEvent.preventDefault) {
+        theEvent.preventDefault();
+      }
+    }
+  }
+
   const resultClass = isChecked ? (isCorrect ? classes.correct : classes.wrong) : '';
+
   return (
     <>
-      <div className={classes.container}>
+      <div className={classes.container} onKeyUp={handleKeyUp}>
         {x} x {y} =
         <input
           type="text"
+          readOnly={isChecked}
           className={resultClass}
           value={result}
           onChange={(event) => setResult(event.target.value)}
+          onKeyDown={validate}
           onKeyUp={handleKeyUp}
           ref={inputElement}
-          pattern="[0-9]+"
         />
         <span className={classes.correct}>{isChecked && !isCorrect && `${x * y}`}</span>
       </div>
+      <Rezultate results={results}/>
     </>
   );
 };
