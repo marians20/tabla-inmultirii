@@ -1,16 +1,16 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import useSound from 'use-sound';
 
-import Rezultate from './rezultate';
+import Summary from './summary';
 import Constants from './../constants';
 import { isDigit } from '../lib/validators/stringValidators';
+import { getRandomNumber } from "../lib/numbers-utils";
 
 import fart from '../sounds/fart.mp3';
 import clapping from '../sounds/clapping.mp3';
 import classes from "./tabla-inmultirii.module.css";
+import VisualFeedback from "./visual-feedback";
 
-
-const getRandomNumber = () => Math.floor(Math.random() * 8) + 2;
 
 const TablaInmultirii = () => {
   const inputElement = useRef();
@@ -95,38 +95,6 @@ const TablaInmultirii = () => {
 
   const resultClass = isChecked ? (isCorrect ? classes.correct : classes.wrong) : '';
 
-  const waiting = (
-    <iframe
-      title='waiting'
-      allow="fullscreen"
-      frameBorder="0"
-      height="270"
-      src="https://giphy.com/embed/S32isdJcvgiHELsJ5l/video"
-      width="480"/>
-  );
-
-  const happy = (
-    <iframe
-      title='happy'
-      src="https://giphy.com/embed/YnBntKOgnUSBkV7bQH"
-      width="480"
-      height="400"
-      frameBorder="0"
-      class="giphy-embed"
-      allowFullScreen />
-  )
-
-  const sad = (
-    <iframe
-      title='sad'
-      src="https://giphy.com/embed/6WawoqPVcO7S738Tht"
-      width="480"
-      height="270"
-      frameBorder="0"
-      class="giphy-embed"
-      allowFullScreen />
-  )
-
   return (
     <>
       <div className={classes.container} onKeyUp={handleKeyUp}>
@@ -136,7 +104,7 @@ const TablaInmultirii = () => {
           readOnly={isChecked}
           className={resultClass}
           value={result}
-          onChange={(event) => setResult(event.target.value)}
+          onChange={(event) => setResult(Number(event.target.value))}
           onKeyDown={validate}
           onKeyUp={handleKeyUp}
           ref={inputElement}
@@ -145,12 +113,10 @@ const TablaInmultirii = () => {
       </div>
       <div className={classes['results-container']}>
         <span>
-          {!isChecked && waiting}
-          {isChecked && isCorrect && happy}
-          {isChecked && !isCorrect && sad}
+          <VisualFeedback isChecked={isChecked} isCorrect={isCorrect} />
         </span>
         <span>
-          <Rezultate results={results} />
+          <Summary results={results} />
         </span>
       </div>
 

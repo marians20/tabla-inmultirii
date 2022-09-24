@@ -1,9 +1,9 @@
 import React from 'react';
-import classes from './rezultat.module.css';
+import classes from './summary-line.module.css';
 
 const isCorrect = (result) => Number(result.result) === result.x * result.y;
 
-const Rezultat = ({ result }) => {
+const SummaryLine = ({ result }) => {
   const resultClass = `${classes.container} ${isCorrect(result) ? classes.correct: classes.wrong}`;
 
   return (<div className={resultClass}>
@@ -11,4 +11,4 @@ const Rezultat = ({ result }) => {
   </div>)
 };
 
-export default Rezultat;
+export default SummaryLine;
