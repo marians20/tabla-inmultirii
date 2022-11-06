@@ -4,14 +4,13 @@ import useSound from 'use-sound';
 import Summary from './summary';
 import Constants from './../constants';
 import { isDigit } from '../lib/validators/stringValidators';
+import { getRandomNumber } from "../lib/numbers-utils";
 
 import fart from '../sounds/fart.mp3';
 import clapping from '../sounds/clapping.mp3';
 import classes from "./tabla-inmultirii.module.css";
 import VisualFeedback from "./visual-feedback";
 
-
-const getRandomNumber = () => Math.floor(Math.random() * 8) + 2;
 
 const TablaInmultirii = () => {
   const inputElement = useRef();
@@ -106,7 +105,7 @@ const TablaInmultirii = () => {
           readOnly={isChecked}
           className={resultClass}
           value={result}
-          onChange={(event) => setResult(event.target.value)}
+          onChange={(event) => setResult(Number(event.target.value))}
           onKeyDown={validate}
           onKeyUp={handleKeyUp}
           ref={inputElement}
