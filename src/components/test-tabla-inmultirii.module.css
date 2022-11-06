@@ -1,0 +1,30 @@
+.container,
+.container > input,
+.message {
+  font-size: 72px;
+}
+
+.container > input {
+  width: 1.6em;
+  margin-left: 0.25em;
+  border: none;
+  outline: none;
+}
+
+.container > input:active {
+  border: none;
+  outline: none;
+}
+
+.wrong {
+  color: red;
+  text-decoration: line-through solid red;
+}
+
+.correct {
+  color: green;
+}
+
+.results-container {
+  display: flex;
+}
