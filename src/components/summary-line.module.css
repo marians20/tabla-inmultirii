@@ -8,3 +8,7 @@
 .wrong {
   color: red;
 }
+
+.result {
+  font-weight: bold;
+}

@@ -1,13 +1,14 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import useSound from 'use-sound';
 
-import Rezultate from './rezultate';
+import Summary from './summary';
 import Constants from './../constants';
 import { isDigit } from '../lib/validators/stringValidators';
 
 import fart from '../sounds/fart.mp3';
 import clapping from '../sounds/clapping.mp3';
 import classes from "./tabla-inmultirii.module.css";
+import VisualFeedback from "./visual-feedback";
 
 
 const getRandomNumber = () => Math.floor(Math.random() * 8) + 2;
@@ -75,7 +76,6 @@ const TablaInmultirii = () => {
     let key;
 
     // Handle paste
-    console.log(theEvent.type);
     if (theEvent.type === Constants.EventTypes.Paste) {
       key = theEvent.clipboardData.getData('text/plain');
     }
@@ -84,48 +84,18 @@ const TablaInmultirii = () => {
       key = theEvent.keyCode || theEvent.which;
       key = String.fromCharCode(key);
     }
-    if (!isDigit(key)) {
+
+    if (!isDigit(key) && ['Backspace'].indexOf(theEvent.code) < 0) {
       theEvent.returnValue = false;
 
       if (theEvent.preventDefault) {
+        console.log('preventing default');
         theEvent.preventDefault();
       }
     }
   }
 
   const resultClass = isChecked ? (isCorrect ? classes.correct : classes.wrong) : '';
-
-  const waiting = (
-    <iframe
-      title='waiting'
-      allow="fullscreen"
-      frameBorder="0"
-      height="270"
-      src="https://giphy.com/embed/S32isdJcvgiHELsJ5l/video"
-      width="480"/>
-  );
-
-  const happy = (
-    <iframe
-      title='happy'
-      src="https://giphy.com/embed/YnBntKOgnUSBkV7bQH"
-      width="480"
-      height="400"
-      frameBorder="0"
-      class="giphy-embed"
-      allowFullScreen />
-  )
-
-  const sad = (
-    <iframe
-      title='sad'
-      src="https://giphy.com/embed/6WawoqPVcO7S738Tht"
-      width="480"
-      height="270"
-      frameBorder="0"
-      class="giphy-embed"
-      allowFullScreen />
-  )
 
   return (
     <>
@@ -141,16 +111,14 @@ const TablaInmultirii = () => {
           onKeyUp={handleKeyUp}
           ref={inputElement}
         />
-        <span className={classes.correct}>{isChecked && !isCorrect && `${x * y}`}</span>
+        {isChecked && !isCorrect && <span className={classes.correct}>{`${x * y}`}</span>}
       </div>
       <div className={classes['results-container']}>
+        {/* <span>
+          <VisualFeedback isChecked={isChecked} isCorrect={isCorrect} />
+        </span> */}
         <span>
-          {!isChecked && waiting}
-          {isChecked && isCorrect && happy}
-          {isChecked && !isCorrect && sad}
-        </span>
-        <span>
-          <Rezultate results={results} />
+          <Summary results={results} />
         </span>
       </div>
 
