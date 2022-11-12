@@ -1,3 +1,4 @@
+import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import SummaryLine from "./summary-line";
@@ -56,10 +57,10 @@ const Summary = ({ results }) => {
   return (<>
     {
       questionsCount > 0 && (
-      <div className={`${classes.header} ${summaryClass}`}>
-        Nota: {mark} Ai răspuns corect la {correctResponses} din {questionsCount} întrebări
-        {mark < 5 && 'CORIJENT LA MATEMATICĂ!!!'}
-      </div>
+        <div className={`${classes.header} ${summaryClass}`}>
+          Nota: {mark} Ai răspuns corect la {correctResponses} din {questionsCount} întrebări
+          {mark < 5 && 'CORIJENT LA MATEMATICĂ!!!'}
+        </div>
       )
     }
     <div className={classes.container}>
